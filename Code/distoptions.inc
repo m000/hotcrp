@@ -154,6 +154,17 @@ $Opt["emailFrom"] = "you@example.com";
 //                   Requires additional web server configuration. A string
 //                   value is sent as a WWW-Authenticate header. The default
 //                   string is "Basic realm="HotCRP"".
+//   recaptchaPrivate  Set these two options to enable reCAPTCHA protection
+//   recaptchaPublic on selected forms. Currently solving a reCAPTCHA is
+//                   required only for password reminders and new user 
+//                   registrations.
+//                   Get your keys on http://www.google.com/recaptcha/.
+//                   The use of reCAPTCHA provides protection against
+//                   mass-registrations from bots. If the bots use fake
+//                   addresses, a massive number of error emails will bounce
+//                   back to the site administrators. More important, if the
+//                   configured SMTP has a quota for outgoing emails, mass 
+//                   registrations may disrupt the delivery of legit emails.
 //   defaultEmailDomain Set to the default domain for account email addresses
 //                   when using httpAuthLogin.
 //   zipCommand      Set to the path to the `zip` executable. Defaults to

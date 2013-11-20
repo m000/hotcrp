@@ -76,6 +76,7 @@ class LoginHelper {
 
     static function login() {
         global $Conf, $Opt, $Me, $email_class, $password_class;
+        global $recaptcha;
         $external_login = isset($Opt["ldapLogin"]) || isset($Opt["httpAuthLogin"]);
 
         // In all cases, we need to look up the account information
@@ -112,9 +113,14 @@ class LoginHelper {
         if (!$Me->email && self::unquote_double_quoted_request())
             $Me->load_by_email($_REQUEST["email"]);
         if ($_REQUEST["action"] == "new") {
-            if (!($reg = self::create_account()))
-                return $reg;
-            $_REQUEST["password"] = $Me->password_plaintext;
+            if ($recaptcha->check()) {
+                if (!($reg = self::create_account()))
+                    return $reg;
+                $_REQUEST["password"] = $Me->password_plaintext;
+            }
+            else {
+                return $Conf->errorMsg("CAPTCHA verification failed.");
+            }
         }
 
         if (!$Me->validContact()) {
@@ -133,12 +139,17 @@ class LoginHelper {
             return $Conf->errorMsg("Your account is disabled. Contact the site administrator for more information.");
 
         if ($_REQUEST["action"] == "forgot") {
-            $worked = $Me->sendAccountInfo(false, true);
-            if ($worked == "@resetpassword")
-                $Conf->confirmMsg("A password reset link has been emailed to " . htmlspecialchars($_REQUEST["email"]) . ". When you receive that email, follow its instructions to create a new password.");
-            else if ($worked) {
-                $Conf->confirmMsg("Your password has been emailed to " . htmlspecialchars($_REQUEST["email"]) . ".  When you receive that email, return here to sign in.");
-                $Conf->log("Sent password", $Me);
+            if ($recaptcha->check()) {
+                $worked = $Me->sendAccountInfo(false, true);
+                if ($worked == "@resetpassword")
+                    $Conf->confirmMsg("A password reset link has been emailed to " . htmlspecialchars($_REQUEST["email"]) . ". When you receive that email, follow its instructions to create a new password.");
+                else if ($worked) {
+                    $Conf->confirmMsg("Your password has been emailed to " . htmlspecialchars($_REQUEST["email"]) . ".  When you receive that email, return here to sign in.");
+                    $Conf->log("Sent password", $Me);
+                }
+            }
+            else {
+                return $Conf->errorMsg("CAPTCHA verification failed.");
             }
             return null;
         }

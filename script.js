@@ -2070,3 +2070,17 @@ function copy_override_status(e) {
     if (x)
         x.checked = e.checked;
 }
+
+// set visibility of toggledElement based on the result of f(switchElement)
+function setVisibility(toggledElement, switchElement, f, display) {
+    display = a = typeof display !== 'undefined' ? display : "block";
+
+    if (f(switchElement)) {
+        toggledElement.style.visibility = 'visible';
+        toggledElement.style.display = display;
+    }
+    else {
+        toggledElement.style.visibility = 'hidden';
+        toggledElement.style.display = 'none';
+    }
+}

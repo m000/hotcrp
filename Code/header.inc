@@ -440,6 +440,11 @@ if (isset($_SESSION["redirect_error"])) {
     unset($_SESSION["redirect_error"]);
 }
 
+// Create recaptcha object.
+global $recaptcha;
+require_once('Code/recaptcha.inc');
+$recaptcha = new reCaptcha($Opt);
+
 // Mark as already expired to discourage caching, but allow the browser
 // to cache for history buttons
 session_cache_limiter("");
