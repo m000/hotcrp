@@ -24,7 +24,7 @@ class reCAPTCHA {
             $this->public = $opts[self::PUBLIC_OPTNAME];
 
             if ($ssl == "auto") 
-                $ssl = $_SERVER["HTTPS"];
+                $this->ssl = $_SERVER["HTTPS"];
             else 
                 $this->ssl = (bool)$ssl;
         }

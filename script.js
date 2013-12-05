@@ -2073,8 +2073,7 @@ function copy_override_status(e) {
 
 // set visibility of toggledElement based on the result of f(switchElement)
 function setVisibility(toggledElement, switchElement, f, display) {
-    display = a = typeof display !== 'undefined' ? display : "block";
-
+    display = typeof display !== 'undefined' ? display : "block";
     if (f(switchElement)) {
         toggledElement.style.visibility = 'visible';
         toggledElement.style.display = display;
